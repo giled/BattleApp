@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button ,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput ,TouchableOpacity } from 'react-native';
 
 
 export default class RegistrationScreen extends React.Component {
   render(){
-    var {navigate}=this.props.navigation;
+    const {navigate}=this.props.navigation;
   return (
     <View style={styles.container}>
     <View>

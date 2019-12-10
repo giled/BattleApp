@@ -1,12 +1,24 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button ,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
+import { ScreenOrientation } from 'expo';
 
+async function changeScreenOrientation() {
+  await ScreenOrientation.allowAsync(ScreenOrientation.Orientation.LANDSCAPE);
+}
 
 export default class RegistrationScreen extends React.Component {
-  render(){
-  
+componentDidMount(){
+ ScreenOrientation.allowAsync(ScreenOrientation.Orientation.LANDSCAPE);
+
+} 
+componentWillUnmount(){
+  ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
+}
+
+
+    render(){
   return (
-    <View style={styles.container}>
+    <View   style={styles.container}>
     <Text>Main Page</Text>
   
   </View>
