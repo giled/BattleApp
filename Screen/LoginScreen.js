@@ -3,28 +3,48 @@ import { StyleSheet, Text, View, TextInput ,TouchableOpacity } from 'react-nativ
 
 
 export default class LoginScreen extends React.Component {
+   constructor(){
+     super()
+     this.state = {
+      loginName: '',
+      loginPassword : '',
+      nickname : 'test',
+      password : 'test'
+    }
+   }
   
+  
+
   render(){
     const {navigate}=this.props.navigation;
+    const check =()=>{
+      if (this.state.loginName === this.state.nickname && this.state.loginPassword ===this.state.password){
+        return (navigate("MainPage"),console.log('yes'))
+        
+      }else{
+
+      }
+    }
   return (
     <View style={styles.container}>
       <View>
 
-      <TextInput placeholder="Nickname" style={styles.textInput}/>
-      <TextInput placeholder="Password" style={styles.textInput}/>
+      <TextInput placeholder="Nickname"
+       onChangeText={loginName=>this.setState({loginName})}
+        value={this.state.loginName}  style={styles.textInput}/>
+      <TextInput placeholder="Password" 
+      onChangeText={loginPassword=>this.setState({loginPassword})} 
+      value={this.state.loginPassword} style={styles.textInput}/>
+     
       </View>
       <View>
-      <TouchableOpacity style={styles.buttonContainer} onPress={
-        () =>navigate("MainPage")
-      }>
+      <TouchableOpacity style={styles.buttonContainer}  onPress={check}>
         <Text style={styles.buttonText}>
           Login
         </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonContainer} onPress={
-          () =>navigate("Register")
-        }>
+        <TouchableOpacity style={styles.buttonContainer} >
         <Text style={styles.buttonText}>
           Register
         </Text>
@@ -37,7 +57,6 @@ export default class LoginScreen extends React.Component {
   );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     padding : 20,
