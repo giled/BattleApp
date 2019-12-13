@@ -1,39 +1,104 @@
-import React from 'react';
-import { StyleSheet, Text, View} from 'react-native';
-import { ScreenOrientation } from 'expo';
+import React from "react";
+import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
+import { ScreenOrientation } from "expo";
 
-async function changeScreenOrientation() {
-  await ScreenOrientation.allowAsync(ScreenOrientation.Orientation.LANDSCAPE);
-}
+const imageSource = require("../assets/map.jpg");
 
 export default class RegistrationScreen extends React.Component {
-componentDidMount(){
- ScreenOrientation.allowAsync(ScreenOrientation.Orientation.LANDSCAPE);
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: 0,
+      xcor: null,
+      ycor: null,
+      array: [],
+      count: 0
+    };
+  }
+  handlePress(evt) {
+    var array = this.state.array;
+    var count = 0;
+    console.log("Coordinates", `x coord = ${evt.nativeEvent.locationX}`);
+    console.log("Coordinates", `y coord = ${evt.nativeEvent.locationY}`);
+    var cordinates = {
+      xcor: evt.nativeEvent.locationX,
+      ycor: evt.nativeEvent.locationY
+    };
+    array.push(cordinates);
+    this.setState({
+      array: array
+    });
+  }
 
-} 
-componentWillUnmount(){
-  ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
-}
+  componentDidMount() {
+    ScreenOrientation.lockAsync(ScreenOrientation.Orientation.LANDSCAPE);
+  }
+  componentWillUnmount() {
+    ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
+  }
 
+  render() {
+    var array = [];
+    if (this.state.array.length != 0) {
+      this.state.array.map(res => {
+        array.push(
+          <View
+            style={{
+              position: "relative",
+              flex: 1,
+              left: res.xcor,
+              top: res.ycor,
+              right: res.xcor,
+              bottom: res.ycor
+            }}
+          >
+            <Image
+              source={require("../assets/war.png")}
+              style={{ resizeMode: "cover", width: 35, height: 35 }}
+            ></Image>
+          </View>
+        );
+      });
+    }
 
-    render(){
-  return (
-    <View   style={styles.container}>
-    <Text>Main Page</Text>
-  
-  </View>
-  );
+    console.log(array);
+    return (
+      <View style={styles.container}>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.image}
+            onPress={evt => this.handlePress(evt)}
+          >
+            <Image style={styles.image1} source={imageSource}></Image>
+          </TouchableOpacity>
+        </View>
+        {this.state.array.length != 0 ? <View>{array}</View> : <View></View>}
+      </View>
+    );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding : 20,
+    position: "relative",
+    padding: 1,
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    
+    backgroundColor: "#fff"
+  },
+  image: {
+    // flex : 1,
+    position: "absolute",
+    width: "90%",
+    height: "100%",
+    bottom: 0,
+    right: 0,
+    resizeMode: "stretch",
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#d6d7da"
+  },
+  image1: {
+    width: "100%",
+    height: "100%"
   }
-  
 });
