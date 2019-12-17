@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, Image, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Text
+} from "react-native";
 import { ScreenOrientation } from "expo";
 
 const imageSource = require("../assets/map.jpg");
@@ -21,8 +28,8 @@ export default class RegistrationScreen extends React.Component {
     console.log("Coordinates", `x coord = ${evt.nativeEvent.locationX}`);
     console.log("Coordinates", `y coord = ${evt.nativeEvent.locationY}`);
     var cordinates = {
-      xcor: evt.nativeEvent.locationX,
-      ycor: evt.nativeEvent.locationY
+      xcor: evt.nativeEvent.locationX + 50,
+      ycor: evt.nativeEvent.locationY - 10
     };
     array.push(cordinates);
     this.setState({
@@ -71,8 +78,22 @@ export default class RegistrationScreen extends React.Component {
           >
             <Image style={styles.image1} source={imageSource}></Image>
           </TouchableOpacity>
+          {this.state.array.length != 0 ? <View>{array}</View> : <View></View>}
+          <ScrollView style={styles.Scroll}>
+            <Image
+              source={require("../assets/war.png")}
+              style={styles.ScrollImage}
+            ></Image>
+            <Image
+              source={require("../assets/war.png")}
+              style={styles.ScrollImage}
+            ></Image>
+            <Image
+              source={require("../assets/war.png")}
+              style={styles.ScrollImage}
+            ></Image>
+          </ScrollView>
         </View>
-        {this.state.array.length != 0 ? <View>{array}</View> : <View></View>}
       </View>
     );
   }
@@ -100,5 +121,25 @@ const styles = StyleSheet.create({
   image1: {
     width: "100%",
     height: "100%"
+  },
+  Scroll: {
+    position: "absolute",
+    width: "10%",
+    height: "100%",
+    left: 2,
+    resizeMode: "stretch",
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#d6d7da"
+  },
+  ScrollImage: {
+    flex: 1,
+
+    width: 60,
+    height: 60,
+    //width: "10%",
+    resizeMode: "contain",
+
+    borderColor: "#d6d7da"
   }
 });
