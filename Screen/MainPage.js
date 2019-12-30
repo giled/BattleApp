@@ -8,8 +8,21 @@ import {
   Text
 } from "react-native";
 import { ScreenOrientation } from "expo";
-
+import * as firebase from "firebase";
+const s = "n";
 const imageSource = require("../assets/map.jpg");
+const airdrop = require("../assets/test.png");
+const warimage = require("../assets/war.png");
+const firebaseConfig = {
+  apiKey: "AIzaSyAeUlGmBDezMKtfHQpoMGdmBzvw6lToEto",
+  authDomain: "battlemap-c5355.firebaseapp.com",
+  databaseURL: "https://battlemap-c5355.firebaseio.com",
+  projectId: "battlemap-c5355",
+  storageBucket: "battlemap-c5355.appspot.com",
+  messagingSenderId: "1041382984979",
+  appId: "1:1041382984979:web:33d3e38a6a867374d7dee6",
+  measurementId: "G-N2W1JJ8G46"
+};
 
 export default class RegistrationScreen extends React.Component {
   constructor(props) {
@@ -19,21 +32,24 @@ export default class RegistrationScreen extends React.Component {
       xcor: null,
       ycor: null,
       array: [],
-      count: 0
+      count: 0,
+      selectedImage: "",
+      newImage: warimage
     };
   }
   handlePress(evt) {
-    var array = this.state.array;
-    var count = 0;
+    let array = this.state.array;
     console.log("Coordinates", `x coord = ${evt.nativeEvent.locationX}`);
     console.log("Coordinates", `y coord = ${evt.nativeEvent.locationY}`);
-    var cordinates = {
+    let cordinates = {
       xcor: evt.nativeEvent.locationX + 50,
-      ycor: evt.nativeEvent.locationY - 10
+      ycor: evt.nativeEvent.locationY - 10,
+      selectedImage: this.state.newImage
     };
+
     array.push(cordinates);
     this.setState({
-      array: array
+      //  array: array
     });
   }
 
@@ -45,11 +61,16 @@ export default class RegistrationScreen extends React.Component {
   }
 
   render() {
-    var array = [];
+    let array = [];
+    let count = 0;
     if (this.state.array.length != 0) {
+      count = count + 1;
+      console.log(this.state.array.length);
       this.state.array.map(res => {
+        console.log(res);
         array.push(
           <View
+            key={count}
             style={{
               position: "relative",
               flex: 1,
@@ -60,7 +81,7 @@ export default class RegistrationScreen extends React.Component {
             }}
           >
             <Image
-              source={require("../assets/war.png")}
+              source={res.selectedImage}
               style={{ resizeMode: "cover", width: 35, height: 35 }}
             ></Image>
           </View>
@@ -68,7 +89,6 @@ export default class RegistrationScreen extends React.Component {
       });
     }
 
-    console.log(array);
     return (
       <View style={styles.container}>
         <View style={styles.container}>
@@ -80,18 +100,16 @@ export default class RegistrationScreen extends React.Component {
           </TouchableOpacity>
           {this.state.array.length != 0 ? <View>{array}</View> : <View></View>}
           <ScrollView style={styles.Scroll}>
-            <Image
-              source={require("../assets/war.png")}
-              style={styles.ScrollImage}
-            ></Image>
-            <Image
-              source={require("../assets/war.png")}
-              style={styles.ScrollImage}
-            ></Image>
-            <Image
-              source={require("../assets/war.png")}
-              style={styles.ScrollImage}
-            ></Image>
+            <TouchableOpacity
+              onPress={() => this.setState({ newImage: warimage })}
+            >
+              <Image source={warimage} style={styles.ScrollImage}></Image>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setState({ newImage: airdrop })}
+            >
+              <Image source={airdrop} style={styles.ScrollImage}></Image>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>

@@ -11,6 +11,7 @@ const NavigationApp = createStackNavigator(
     Register: { screen: RegistrationScreen },
     MainPage: { screen: MainPage }
   },
+
   {
     headerMode: "none",
     navigationOptions: {
