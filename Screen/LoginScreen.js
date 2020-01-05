@@ -7,10 +7,14 @@ import {
   TouchableOpacity
 } from "react-native";
 import { connect } from "react-redux";
-import { emailChanged } from "../actions";
+import { emailChanged, passwordChanged } from "../actions";
+
 class LoginScreen extends React.Component {
   onEmailChange(text) {
     this.props.emailChanged(text);
+  }
+  onPasswordChange(test) {
+    this.props.passwordChanged(text);
   }
   constructor() {
     super();
@@ -49,8 +53,10 @@ class LoginScreen extends React.Component {
           <TextInput
             secureTextEntry
             placeholder="Password"
-            onChangeText={loginPassword => this.setState({ loginPassword })}
-            value={this.state.loginPassword}
+            onChangeText={loginPassword =>
+              this.setState({ loginPassword }, this.onPasswordChange.bind(this))
+            }
+            value={(this.state.loginPassword, this.props.password)}
             style={styles.textInput}
           />
         </View>
@@ -104,8 +110,11 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
   return {
-    email: state.auth.email
+    email: state.auth.email,
+    password: state.auth.password
   };
 };
 
-export default connect(mapStateToProps, { emailChanged })(LoginScreen);
+export default connect(mapStateToProps, { emailChanged, passwordChanged })(
+  LoginScreen
+);
