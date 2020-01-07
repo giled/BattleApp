@@ -7,8 +7,9 @@ import RegistrationScreen from "./Screen/RegistrationScreen";
 import MainPage from "./Screen/MainPage";
 import firebase from "firebase";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import reducers from "./reducers";
+import ReduxThunk from "redux-thunk";
 const NavigationApp = createStackNavigator(
   {
     Home: { screen: LoginScreen },
@@ -40,8 +41,9 @@ export default class App extends React.Component {
     firebase.initializeApp(config);
   }
   render() {
+    const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
     return (
-      <Provider store={createStore(reducers)}>
+      <Provider store={store}>
         <AppContainer />
       </Provider>
     );
