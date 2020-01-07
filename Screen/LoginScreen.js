@@ -20,6 +20,15 @@ class LoginScreen extends React.Component {
     const { email, password } = this.props;
     this.props.loginUser({ email, password });
   }
+  renderError() {
+    if (this.props.error) {
+      return (
+        <View>
+          <Text style={styles.errorText}>{this.props.error}</Text>
+        </View>
+      );
+    }
+  }
   constructor() {
     super();
     this.state = {
@@ -69,6 +78,8 @@ class LoginScreen extends React.Component {
             style={styles.textInput}
           />
         </View>
+        {this.renderError()}
+
         <View>
           <TouchableOpacity
             style={styles.buttonContainer}
@@ -98,6 +109,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around"
   },
+  errorText: {
+    fontSize: 20,
+    alignSelf: "center",
+    color: "red"
+  },
   buttonContainer: {
     alignItems: "center",
     padding: 0,
@@ -123,7 +139,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     email: state.auth.email,
-    password: state.auth.password
+    password: state.auth.password,
+    error: state.auth.error
   };
 };
 
