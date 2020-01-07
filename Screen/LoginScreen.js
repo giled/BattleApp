@@ -4,7 +4,8 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
 import { emailChanged, passwordChanged, loginUser } from "../actions";
@@ -28,6 +29,27 @@ class LoginScreen extends React.Component {
         </View>
       );
     }
+  }
+  renderButton() {
+    if (this.props.loading) {
+      return <ActivityIndicator size="large" />;
+    }
+    return (
+      <View>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={this.onButtonPress.bind(this)}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.buttonContainer}>
+          <Text style={styles.buttonText} onPress={() => navigate("Register")}>
+            Register
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
   constructor() {
     super();
@@ -80,23 +102,7 @@ class LoginScreen extends React.Component {
         </View>
         {this.renderError()}
 
-        <View>
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={(check, this.onButtonPress.bind(this))}
-          >
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.buttonContainer}>
-            <Text
-              style={styles.buttonText}
-              onPress={() => navigate("Register")}
-            >
-              Register
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {this.renderButton()}
       </View>
     );
   }
@@ -140,7 +146,8 @@ const mapStateToProps = state => {
   return {
     email: state.auth.email,
     password: state.auth.password,
-    error: state.auth.error
+    error: state.auth.error,
+    loading: state.auth.loading
   };
 };
 
