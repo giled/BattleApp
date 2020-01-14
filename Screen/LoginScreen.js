@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { emailChanged, passwordChanged, loginUser } from "../actions";
+import { Actions } from "react-native-router-flux";
 
 class LoginScreen extends React.Component {
   onEmailChange(text) {
@@ -43,10 +44,14 @@ class LoginScreen extends React.Component {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonContainer}>
-          <Text style={styles.buttonText} onPress={() => navigate("Register")}>
-            Register
-          </Text>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={
+            //() => navigate("Register")
+            () => Actions.reg()
+          }
+        >
+          <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
       </View>
     );

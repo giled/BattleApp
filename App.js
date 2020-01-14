@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import reducers from "./reducers";
 import ReduxThunk from "redux-thunk";
+import Router from "./Screen/Router";
 const NavigationApp = createStackNavigator(
   {
     Home: { screen: LoginScreen },
@@ -44,7 +45,7 @@ export default class App extends React.Component {
     const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
     return (
       <Provider store={store}>
-        <AppContainer />
+        <Router />
       </Provider>
     );
   }
