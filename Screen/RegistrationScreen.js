@@ -4,7 +4,8 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import firebase from "firebase";
 export default class RegistrationScreen extends React.Component {
@@ -17,22 +18,31 @@ export default class RegistrationScreen extends React.Component {
     };
   }
   registrationForm = (email, password, confirmPassword) => {
-    try {
-      if (password === confirmPassword) {
+    if (password === confirmPassword) {
+      try {
         firebase
           .auth()
           .createUserWithEmailAndPassword(email, password)
-          .then(alert("Registration succed"))
           .catch(error => {
-            alert(error.message);
+            switch (error.code) {
+              case "auth/invalid-email":
+                Alert.alert("", "Invalid Email adress !");
+                break;
+              case "auth/email-already-in-use":
+                Alert.alert("", "Email already in use !");
+                break;
+            }
           });
-      } else {
-        alert("Wrong Password");
+      } catch (err) {
+        Alert.alert("Error : ", err);
       }
-    } catch (err) {
-      alert(err);
+    } else if (password.length < 6) {
+      alert("Password to short");
+    } else if (password != confirmPassword) {
+      Alert.alert("", "Wrong Password");
     }
   };
+
   renderError() {
     if (this.props.error) {
       return (
