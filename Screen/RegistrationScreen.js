@@ -6,30 +6,76 @@ import {
   TextInput,
   TouchableOpacity
 } from "react-native";
-
+import firebase from "firebase";
 export default class RegistrationScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: "",
+      password: "",
+      confirmPassword: ""
+    };
+  }
+  registrationForm = (email, password, confirmPassword) => {
+    try {
+      if (password === confirmPassword) {
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then(alert("Registration succed"))
+          .catch(error => {
+            alert(error.message);
+          });
+      } else {
+        alert("Wrong Password");
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+  renderError() {
+    if (this.props.error) {
+      return (
+        <View>
+          <Text>{(this.props.error, console.log(this.props.error))}</Text>
+        </View>
+      );
+    }
+  }
   render() {
-    const { navigate } = this.props.navigation;
+    // const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <View>
-          <TextInput placeholder="Nickname" style={styles.textInput} />
-          <TextInput placeholder="Email" style={styles.textInput} />
           <TextInput
+            placeholder="Email"
+            style={styles.textInput}
+            onChangeText={email => this.setState({ email })}
+          />
+          <TextInput
+            onChangeText={password => this.setState({ password })}
             secureTextEntry={true}
             placeholder="Password"
             style={styles.textInput}
           />
           <TextInput
+            onChangeText={confirmPassword => this.setState({ confirmPassword })}
             secureTextEntry={true}
             placeholder="Confirm Password"
             style={styles.textInput}
           />
         </View>
+        {this.renderError}
         <View>
           <TouchableOpacity
+            onPress={() => {
+              this.registrationForm(
+                this.state.email,
+                this.state.password,
+                this.state.confirmPassword
+              );
+            }}
             style={styles.buttonContainer}
-            onPress={() => navigate("Home")}
           >
             <Text style={styles.buttonText}>Register</Text>
           </TouchableOpacity>

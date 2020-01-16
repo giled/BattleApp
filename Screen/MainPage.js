@@ -5,7 +5,8 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Text
+  Text,
+  StatusBar
 } from "react-native";
 import { ScreenOrientation } from "expo";
 import * as firebase from "firebase";
@@ -90,29 +91,35 @@ export default class RegistrationScreen extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <StatusBar hidden>
         <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.image}
-            onPress={evt => this.handlePress(evt)}
-          >
-            <Image style={styles.image1} source={imageSource}></Image>
-          </TouchableOpacity>
-          {this.state.array.length != 0 ? <View>{array}</View> : <View></View>}
-          <ScrollView style={styles.Scroll}>
+          <View style={styles.container}>
             <TouchableOpacity
-              onPress={() => this.setState({ newImage: warimage })}
+              style={styles.image}
+              onPress={evt => this.handlePress(evt)}
             >
-              <Image source={warimage} style={styles.ScrollImage}></Image>
+              <Image style={styles.image1} source={imageSource}></Image>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.setState({ newImage: airdrop })}
-            >
-              <Image source={airdrop} style={styles.ScrollImage}></Image>
-            </TouchableOpacity>
-          </ScrollView>
+            {this.state.array.length != 0 ? (
+              <View>{array}</View>
+            ) : (
+              <View></View>
+            )}
+            <ScrollView style={styles.Scroll}>
+              <TouchableOpacity
+                onPress={() => this.setState({ newImage: warimage })}
+              >
+                <Image source={warimage} style={styles.ScrollImage}></Image>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.setState({ newImage: airdrop })}
+              >
+                <Image source={airdrop} style={styles.ScrollImage}></Image>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      </StatusBar>
     );
   }
 }

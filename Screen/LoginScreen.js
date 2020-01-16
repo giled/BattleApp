@@ -5,7 +5,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  StatusBar
 } from "react-native";
 import { connect } from "react-redux";
 import { emailChanged, passwordChanged, loginUser } from "../actions";
