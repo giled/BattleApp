@@ -9,7 +9,7 @@ import {
   StatusBar
 } from "react-native";
 import { ScreenOrientation } from "expo";
-import * as firebase from "firebase";
+import firebase from "firebase";
 const s = "n";
 const imageSource = require("../assets/map.jpg");
 const airdrop = require("../assets/test.png");
@@ -35,6 +35,7 @@ export default class RegistrationScreen extends React.Component {
       array: [],
       count: 0,
       selectedImage: "",
+
       newImage: warimage
     };
   }
@@ -42,6 +43,7 @@ export default class RegistrationScreen extends React.Component {
     let array = this.state.array;
     console.log("Coordinates", `x coord = ${evt.nativeEvent.locationX}`);
     console.log("Coordinates", `y coord = ${evt.nativeEvent.locationY}`);
+    const { user } = firebase.auth().currentUser.email;
     let cordinates = {
       xcor: evt.nativeEvent.locationX + 50,
       ycor: evt.nativeEvent.locationY - 10,
@@ -49,6 +51,10 @@ export default class RegistrationScreen extends React.Component {
     };
 
     array.push(cordinates);
+    firebase
+      .database()
+      .ref("cordinates/")
+      .push(cordinates);
     this.setState({
       //  array: array
     });
@@ -62,13 +68,14 @@ export default class RegistrationScreen extends React.Component {
   }
 
   render() {
+    <StatusBar hidden />;
     let array = [];
     let count = 0;
     if (this.state.array.length != 0) {
       count = count + 1;
-      console.log(this.state.array.length);
+      //  console.log(this.state.array.length);
       this.state.array.map(res => {
-        console.log(res);
+        // console.log(res);
         array.push(
           <View
             key={count}
@@ -91,35 +98,29 @@ export default class RegistrationScreen extends React.Component {
     }
 
     return (
-      <StatusBar hidden>
+      <View style={styles.container}>
         <View style={styles.container}>
-          <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.image}
+            onPress={evt => this.handlePress(evt)}
+          >
+            <Image style={styles.image1} source={imageSource}></Image>
+          </TouchableOpacity>
+          {this.state.array.length != 0 ? <View>{array}</View> : <View></View>}
+          <ScrollView style={styles.Scroll}>
             <TouchableOpacity
-              style={styles.image}
-              onPress={evt => this.handlePress(evt)}
+              onPress={() => this.setState({ newImage: warimage })}
             >
-              <Image style={styles.image1} source={imageSource}></Image>
+              <Image source={warimage} style={styles.ScrollImage}></Image>
             </TouchableOpacity>
-            {this.state.array.length != 0 ? (
-              <View>{array}</View>
-            ) : (
-              <View></View>
-            )}
-            <ScrollView style={styles.Scroll}>
-              <TouchableOpacity
-                onPress={() => this.setState({ newImage: warimage })}
-              >
-                <Image source={warimage} style={styles.ScrollImage}></Image>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.setState({ newImage: airdrop })}
-              >
-                <Image source={airdrop} style={styles.ScrollImage}></Image>
-              </TouchableOpacity>
-            </ScrollView>
-          </View>
+            <TouchableOpacity
+              onPress={() => this.setState({ newImage: airdrop })}
+            >
+              <Image source={airdrop} style={styles.ScrollImage}></Image>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
-      </StatusBar>
+      </View>
     );
   }
 }

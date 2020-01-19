@@ -5,16 +5,19 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import firebase from "firebase";
+import { Actions } from "react-native-router-flux";
 export default class RegistrationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      activityIndicator: false
     };
   }
   registrationForm = (email, password, confirmPassword) => {
@@ -23,6 +26,11 @@ export default class RegistrationScreen extends React.Component {
         firebase
           .auth()
           .createUserWithEmailAndPassword(email, password)
+          .then(() => {
+            console.log("Registration succesful.");
+            Alert.alert("", "Registration succesful.");
+            Actions.auth();
+          })
           .catch(error => {
             switch (error.code) {
               case "auth/invalid-email":
