@@ -5,25 +5,17 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Text,
   StatusBar
 } from "react-native";
 import { ScreenOrientation } from "expo";
 import firebase from "firebase";
-const s = "n";
+import {
+  TouchableHighlight,
+  TouchableWithoutFeedback
+} from "react-native-gesture-handler";
 const imageSource = require("../assets/map.jpg");
 const airdrop = require("../assets/test.png");
 const warimage = require("../assets/war.png");
-const firebaseConfig = {
-  apiKey: "AIzaSyAeUlGmBDezMKtfHQpoMGdmBzvw6lToEto",
-  authDomain: "battlemap-c5355.firebaseapp.com",
-  databaseURL: "https://battlemap-c5355.firebaseio.com",
-  projectId: "battlemap-c5355",
-  storageBucket: "battlemap-c5355.appspot.com",
-  messagingSenderId: "1041382984979",
-  appId: "1:1041382984979:web:33d3e38a6a867374d7dee6",
-  measurementId: "G-N2W1JJ8G46"
-};
 
 export default class RegistrationScreen extends React.Component {
   constructor(props) {
@@ -41,19 +33,21 @@ export default class RegistrationScreen extends React.Component {
   }
   handlePress(evt) {
     let array = this.state.array;
-    console.log("Coordinates", `x coord = ${evt.nativeEvent.locationX}`);
-    console.log("Coordinates", `y coord = ${evt.nativeEvent.locationY}`);
-    const { user } = firebase.auth().currentUser.email;
+    //console.log("Coordinates", `x coord = ${evt.nativeEvent.locationX}`);
+    //console.log("Coordinates", `y coord = ${evt.nativeEvent.locationY}`);
+    const user = firebase.auth().currentUser.uid;
     let cordinates = {
       xcor: evt.nativeEvent.locationX + 50,
       ycor: evt.nativeEvent.locationY - 10,
       selectedImage: this.state.newImage
     };
 
+    // console.log(this.state.newImage);
+
     array.push(cordinates);
     firebase
       .database()
-      .ref("cordinates/")
+      .ref(`/cordinates/1/`)
       .push(cordinates);
     this.setState({
       //  array: array
@@ -62,51 +56,63 @@ export default class RegistrationScreen extends React.Component {
 
   componentDidMount() {
     ScreenOrientation.lockAsync(ScreenOrientation.Orientation.LANDSCAPE);
+    StatusBar.setHidden(true);
   }
   componentWillUnmount() {
     ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
   }
+  handlerClick(key) {
+    console.log(key);
+  }
 
   render() {
-    <StatusBar hidden />;
     let array = [];
-    let count = 0;
-    if (this.state.array.length != 0) {
-      count = count + 1;
-      //  console.log(this.state.array.length);
-      this.state.array.map(res => {
-        // console.log(res);
-        array.push(
-          <View
-            key={count}
-            style={{
-              position: "relative",
-              flex: 1,
-              left: res.xcor,
-              top: res.ycor,
-              right: res.xcor,
-              bottom: res.ycor
-            }}
-          >
-            <Image
-              source={res.selectedImage}
-              style={{ resizeMode: "cover", width: 35, height: 35 }}
-            ></Image>
-          </View>
-        );
-      });
-    }
+    const user = firebase.auth().currentUser.uid;
+    firebase
+      .database()
+      .ref(`/cordinates/1/`)
 
+      .on("value", snapshot => {
+        if (snapshot && snapshot.exists()) {
+          snapshot.forEach(child => {
+            // console.log(child.key);
+            array.push(
+              <View
+                key={child.key}
+                style={{
+                  position: "absolute",
+                  flex: 1,
+                  left: child.val().xcor,
+                  top: child.val().ycor,
+                  right: child.val().xcor,
+                  bottom: child.val().ycor
+                }}
+              >
+                <TouchableOpacity onPress={this.handlerClick(child.key)}>
+                  <Image
+                    source={child.val().selectedImage}
+                    style={{ resizeMode: "cover", width: 50, height: 50 }}
+                  ></Image>
+                </TouchableOpacity>
+              </View>
+            );
+          });
+        }
+      });
     return (
       <View style={styles.container}>
         <View style={styles.container}>
           <TouchableOpacity
             style={styles.image}
-            onPress={evt => this.handlePress(evt)}
+            onLongPress={evt => this.handlePress(evt)}
           >
             <Image style={styles.image1} source={imageSource}></Image>
           </TouchableOpacity>
-          {this.state.array.length != 0 ? <View>{array}</View> : <View></View>}
+          {this.state.array.length != 0 ? (
+            <View style={styles.icon}>{array}</View>
+          ) : (
+            <View></View>
+          )}
           <ScrollView style={styles.Scroll}>
             <TouchableOpacity
               onPress={() => this.setState({ newImage: warimage })}

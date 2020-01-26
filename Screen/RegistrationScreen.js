@@ -17,7 +17,7 @@ export default class RegistrationScreen extends React.Component {
       email: "",
       password: "",
       confirmPassword: "",
-      activityIndicator: false
+      isLoading: false
     };
   }
   registrationForm = (email, password, confirmPassword) => {
@@ -27,7 +27,7 @@ export default class RegistrationScreen extends React.Component {
           .auth()
           .createUserWithEmailAndPassword(email, password)
           .then(() => {
-            console.log("Registration succesful.");
+            this.setState({ isLoading: false });
             Alert.alert("", "Registration succesful.");
             Actions.auth();
           })
@@ -35,22 +35,31 @@ export default class RegistrationScreen extends React.Component {
             switch (error.code) {
               case "auth/invalid-email":
                 Alert.alert("", "Invalid Email adress !");
+                this.setState({ isLoading: false });
                 break;
               case "auth/email-already-in-use":
                 Alert.alert("", "Email already in use !");
+                this.setState({ isLoading: false });
                 break;
             }
           });
       } catch (err) {
         Alert.alert("Error : ", err);
+        this.setState({ isLoading: false });
       }
     } else if (password.length < 6) {
       alert("Password to short");
+      this.setState({ isLoading: false });
     } else if (password != confirmPassword) {
       Alert.alert("", "Wrong Password");
+      this.setState({ isLoading: false });
     }
   };
-
+  renderButton() {
+    if (this.state.isLoading) {
+      return <ActivityIndicator size="large" animating={true} />;
+    }
+  }
   renderError() {
     if (this.props.error) {
       return (
@@ -83,6 +92,7 @@ export default class RegistrationScreen extends React.Component {
             style={styles.textInput}
           />
         </View>
+        {this.renderButton()}
         {this.renderError}
         <View>
           <TouchableOpacity
@@ -92,6 +102,7 @@ export default class RegistrationScreen extends React.Component {
                 this.state.password,
                 this.state.confirmPassword
               );
+              this.setState({ isLoading: true });
             }}
             style={styles.buttonContainer}
           >

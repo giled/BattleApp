@@ -16,7 +16,11 @@ const ReactRouter = () => {
           />
         </Scene>
         <Scene key="reg">
-          <Scene key="registration" component={RegistrationScreen} />
+          <Scene
+            key="registration"
+            title="Registration"
+            component={RegistrationScreen}
+          />
         </Scene>
         <Scene key="main">
           <Scene key="mainPage" component={MainPage} hideNavBar={true} />
