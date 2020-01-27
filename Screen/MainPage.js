@@ -17,6 +17,9 @@ import {
 const imageSource = require("../assets/map.jpg");
 const airdrop = require("../assets/test.png");
 const warimage = require("../assets/war.png");
+const one = require("../assets/1.png");
+const two = require("../assets/2.png");
+const trhee = require("../assets/3.png");
 
 export default class RegistrationScreen extends React.Component {
   constructor(props) {
@@ -150,6 +153,15 @@ export default class RegistrationScreen extends React.Component {
             onPress={() => this.setState({ newImage: airdrop })}
           >
             <Image source={airdrop} style={styles.ScrollImage}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.setState({ newImage: one })}>
+            <Image source={one} style={styles.ScrollImage}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.setState({ newImage: two })}>
+            <Image source={two} style={styles.ScrollImage}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.setState({ newImage: trhee })}>
+            <Image source={trhee} style={styles.ScrollImage}></Image>
           </TouchableOpacity>
         </ScrollView>
       </View>

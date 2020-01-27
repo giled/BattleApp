@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  StatusBar
+  StatusBar,
+  Image
 } from "react-native";
 import { connect } from "react-redux";
 import { emailChanged, passwordChanged, loginUser } from "../actions";
@@ -81,7 +82,11 @@ class LoginScreen extends React.Component {
     };
     return (
       <View style={styles.container}>
-        <View>
+        <Image
+          source={require(`../assets/airsoft-wallpaper.jpg`)}
+          style={styles.backgroundImage}
+        />
+        <View style={styles.login}>
           <TextInput
             placeholder="Nickname"
             onChangeText={
@@ -105,21 +110,33 @@ class LoginScreen extends React.Component {
             }
             style={styles.textInput}
           />
-        </View>
-        {this.renderError()}
+          {this.renderError()}
 
-        {this.renderButton()}
+          {this.renderButton()}
+        </View>
       </View>
     );
   }
 }
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 0,
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "space-around"
+    alignItems: "center"
+    //  justifyContent: "space-around"
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "contain",
+    aspectRatio: 2.5,
+    height: "100%",
+    position: "absolute"
+  },
+  login: {
+    position: "absolute",
+    justifyContent: "space-between",
+    bottom: "40%"
   },
   errorText: {
     fontSize: 20,

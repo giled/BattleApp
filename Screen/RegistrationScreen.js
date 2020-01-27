@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from "react-native";
 import firebase from "firebase";
 import { Actions } from "react-native-router-flux";
@@ -73,6 +74,10 @@ export default class RegistrationScreen extends React.Component {
     // const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
+        <Image
+          source={require(`../assets/airsoft-wallpaper.jpg`)}
+          style={styles.backgroundImage}
+        />
         <View>
           <TextInput
             placeholder="Email"
@@ -117,10 +122,13 @@ export default class RegistrationScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "space-around"
+    alignItems: "center"
+  },
+  backgroundImage: {
+    resizeMode: "contain",
+    position: "absolute",
+    height: 800
   },
   buttonContainer: {
     alignItems: "center",
