@@ -5,7 +5,8 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  StatusBar
+  StatusBar,
+  Alert
 } from "react-native";
 import { ScreenOrientation } from "expo";
 import firebase from "firebase";
@@ -25,8 +26,10 @@ export default class RegistrationScreen extends React.Component {
       xcor: null,
       ycor: null,
       array: [],
+      all_base: [],
       count: 0,
       selectedImage: "",
+      showView: true,
 
       newImage: warimage
     };
@@ -57,75 +60,98 @@ export default class RegistrationScreen extends React.Component {
   componentDidMount() {
     ScreenOrientation.lockAsync(ScreenOrientation.Orientation.LANDSCAPE);
     StatusBar.setHidden(true);
+    const iconRef = firebase.database().ref(`/cordinates/1/`);
+    this.listenForFireBase(iconRef);
   }
   componentWillUnmount() {
     ScreenOrientation.allow(ScreenOrientation.Orientation.PORTRAIT);
   }
+  listenForFireBase = iconRef => {
+    iconRef.on("value", snapshot => {
+      var aux = [];
+      if (snapshot && snapshot.exists()) {
+        snapshot.forEach(child => {
+          aux.push(
+            <View
+              key={child.key}
+              style={{
+                position: "relative",
+                flex: 1,
+                left: child.val().xcor,
+                top: child.val().ycor,
+                right: child.val().xcor,
+                bottom: child.val().ycor
+              }}
+              onStartShouldSetResponder={() => this.handlerClick(child.key)}
+            >
+              <Image
+                source={child.val().selectedImage}
+                style={{ resizeMode: "cover", width: 40, height: 40 }}
+              />
+            </View>
+          );
+        });
+      }
+      this.setState({ all_base: aux });
+    });
+  };
+
   handlerClick(key) {
     console.log(key);
+    Alert.alert(
+      "Alert",
+      "Remove position?",
+      [
+        {
+          text: "NO",
+          onPress: () => console.log("ok")
+        },
+        {
+          text: "YES",
+          onPress: () =>
+            firebase
+              .database()
+              .ref(`/cordinates/1/`)
+              .child(key)
+              .remove()
+        }
+      ],
+      { cancelable: false }
+    );
   }
 
   render() {
     let array = [];
     const user = firebase.auth().currentUser.uid;
-    firebase
-      .database()
-      .ref(`/cordinates/1/`)
-
-      .on("value", snapshot => {
-        if (snapshot && snapshot.exists()) {
-          snapshot.forEach(child => {
-            // console.log(child.key);
-            array.push(
-              <View
-                key={child.key}
-                style={{
-                  position: "absolute",
-                  flex: 1,
-                  left: child.val().xcor,
-                  top: child.val().ycor,
-                  right: child.val().xcor,
-                  bottom: child.val().ycor
-                }}
-              >
-                <TouchableOpacity onPress={this.handlerClick(child.key)}>
-                  <Image
-                    source={child.val().selectedImage}
-                    style={{ resizeMode: "cover", width: 50, height: 50 }}
-                  ></Image>
-                </TouchableOpacity>
-              </View>
-            );
-          });
-        }
-      });
+    let show_fireBase = this.state.all_base.map(val => {
+      console.log(val);
+      return val;
+    });
     return (
       <View style={styles.container}>
         <View style={styles.container}>
           <TouchableOpacity
-            style={styles.image}
             onLongPress={evt => this.handlePress(evt)}
+            style={styles.image}
+            activeOpacity={1}
           >
             <Image style={styles.image1} source={imageSource}></Image>
           </TouchableOpacity>
-          {this.state.array.length != 0 ? (
-            <View style={styles.icon}>{array}</View>
-          ) : (
-            <View></View>
-          )}
-          <ScrollView style={styles.Scroll}>
-            <TouchableOpacity
-              onPress={() => this.setState({ newImage: warimage })}
-            >
-              <Image source={warimage} style={styles.ScrollImage}></Image>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.setState({ newImage: airdrop })}
-            >
-              <Image source={airdrop} style={styles.ScrollImage}></Image>
-            </TouchableOpacity>
-          </ScrollView>
+          <View>{show_fireBase}</View>
+          {/* {this.state.array.length != 0 ? <View>{array}</View> : <View></View>} */}
         </View>
+        <ScrollView style={styles.Scroll}>
+          <TouchableOpacity
+            onPress={() => this.setState({ newImage: warimage })}
+          >
+            <Image source={warimage} style={styles.ScrollImage}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.setState({ newImage: airdrop })}
+          >
+            <Image source={airdrop} style={styles.ScrollImage}></Image>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     );
   }
@@ -135,11 +161,11 @@ const styles = StyleSheet.create({
   container: {
     position: "relative",
     padding: 1,
-    flex: 1,
-    backgroundColor: "#fff"
+    flex: 1
+    //backgroundColor: "#fff"
   },
   image: {
-    // flex : 1,
+    flex: 5,
     position: "absolute",
     width: "90%",
     height: "100%",
